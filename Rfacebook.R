@@ -31,3 +31,30 @@ myAppID = ""
 muAppSecret =""
 
 fb_oauth <- fbOAuth(app_id= myAppID, app_secret= muAppSecret,extended_permissions = TRUE)
+
+load("fb_oauth.Rd") ## load my previously saved authentication token
+
+
+# token generated here: https://developers.facebook.com/tools/explorer 
+token <- ''
+me <- getUsers("me", token, private_info=TRUE)
+me$name # my name
+me$hometown # my hometown
+
+my_friends <- getFriends(token, simplify = TRUE)
+head(my_friends$id, n = 1) # get lowest user ID
+
+my_friends_info <- getUsers(my_friends$id, token, private_info = TRUE)
+table(my_friends_info$gender)  # gender
+table(substr(my_friends_info$locale, 1, 2))  # language
+table(substr(my_friends_info$locale, 4, 5))  # country
+table(my_friends_info$relationship_status)  # relationship status
+
+mat <- getNetwork(token, format = "adj.matrix")
+dim(mat) # dimension of matrix
+
+
+
+page <- getPage("AFP", token, n = 5000)
+page[which.max(page$likes_count), ]
+
